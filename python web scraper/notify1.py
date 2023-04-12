@@ -1,0 +1,67 @@
+"""notify the user if the website updates
+steps:
+1. read the url you wan't to monitor
+2. hash the entire website
+3. wait for a specified amount of seconds
+4. if there are any changes as compared to the previous has notify me else wait and again and then take the hash
+
+libraries :
+1. time : to wait for a specified amount of time
+2. hashlib: to hash the content of the entire website
+3. urlib: to perform the get request and load the content of the website
+"""
+# import libraries 
+import time
+import hashlib
+from urllib.request import urlopen,Request
+
+# setting the url you wan't to monitor
+url=Request('https://www.gpamravati.ac.in/',
+	headers={'User-Agent': 'Mozilla/5.0'})
+
+# to perform a GET request and load the content of website and store it in a var 
+response=urlopen(url).read()
+
+# to create the initial hash 
+currentHash=hashlib.sha224(response).hexdigest()
+print("running")
+time.sleep(10)
+while True:
+	try:
+		# perform the get request and store it in a var 
+		response=urlopen(url).read()
+
+		# create a hash 
+		currentHash=hashlib.sha224(response).hexdigest()
+
+		# wait for 30 seconds 
+		time.sleep(30)
+
+		# perform the get request 
+		response=urlopen(url).read()
+
+		# create a new hash 
+		newHash=hashlib.sha224(response).hexdigest()
+
+		# check if new hash is same as the previous has 
+		if newHash==currentHash:
+			continue
+
+		# if something changed in the hashes 
+		else:
+		# notify
+			print("something changed")
+
+		# again read the website 
+			response=urlopen(url).read()
+
+		# create a hash 
+			currentHash=hashlib.sha224(response).hexdigest()
+
+		# wait for 30 seconds 
+			time.sleep(30)
+			continue
+
+		# to handle exceptions 
+	except Exception as e:
+		print("error")
